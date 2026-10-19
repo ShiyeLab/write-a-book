@@ -46,7 +46,7 @@ run=$(mktemp -d)
 python3 tools/build_wiki.py examples/source-based/generated/cards.json --tags examples/source-based/tags.json --output "$run/wiki"
 ```
 
-输出 entries 正式条目、topics 主题视图、README、关键词索引、ID 路径索引及完整 cards.json。条目中 `<!-- full-quote -->` 后是完整正文，末尾也不强补换行；主题仅链接，不复制计数。ID 与主题名编码为安全文件名，Markdown 链接也编码。条目和主题分别在写入前检查文件名：ID 或不同主题名不能产生仅大小写不同的输出文件名（例如 `M01`／`m01`、`Topic`／`topic`）。发现冲突会报错并返回非零，不留下目标目录；需修改冲突名称后重试。多张卡片引用完全相同的主题可以正常归类。summary 显式标为摘要。工具只负责完整卡片传递与索引，来源保真须先运行 verify_quotes；它不从摘要恢复正文，也不自动生成语义关联。
+输出 entries 正式条目、topics 主题视图、README、关键词索引、ID 路径索引及完整 cards.json。条目中 `<!-- full-quote -->` 后是完整正文，末尾也不强补换行；主题仅链接，不复制计数。ID 与主题名直接作文件名，汉字等原样保留；仅将 `%<>:"/\|?*`、控制字符、开头的点及结尾的点和空格按 UTF-8 百分号编码。文件名超过 240 字节（约 80 个汉字）时报错，需缩短名称。Markdown 链接只编码 ASCII 保留字符。条目和主题分别在写入前检查文件名：ID 或不同主题名不能产生仅大小写不同的输出文件名（例如 `M01`／`m01`、`Topic`／`topic`）。发现冲突会报错并返回非零，不留下目标目录；需修改冲突名称后重试。多张卡片引用完全相同的主题可以正常归类。summary 显式标为摘要。工具只负责完整卡片传递与索引，来源保真须先运行 verify_quotes；它不从摘要恢复正文，也不自动生成语义关联。
 
 ## 忠实删节
 

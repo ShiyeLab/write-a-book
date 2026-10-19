@@ -119,6 +119,16 @@ class Tools(unittest.TestCase):
     def test_wiki_id_filenames_distinct(self):
         rows=[{'id':i,'source_id':'s','location':'L1','quote':'全文'} for i in ['x/y','x%2Fy','x_y']]
         build(rows,[],self.d/'wiki');self.assertEqual(len(list((self.d/'wiki/entries').glob('*.md'))),3)
+    def test_wiki_readable_unicode_names_and_lf(self):
+        rows=[{'id':i,'source_id':'s','location':'L1','quote':'第一行\n第二行'} for i in ['素材一','.隐藏']]
+        tags=[{'id':'素材一','topics':['来源核对']}]
+        build(rows,tags,self.d/'wiki');out=self.d/'wiki'
+        self.assertTrue((out/'topics'/'来源核对.md').is_file());self.assertTrue((out/'entries'/'%2E隐藏.md').is_file())
+        self.assertIn('(topics/来源核对.md)',(out/'README.md').read_text(encoding='utf-8'))
+        self.assertNotIn(b'\r\n',(out/'entries'/'素材一.md').read_bytes())
+        with self.assertRaisesRegex(ValueError,'名称过长'):
+            build(rows,[{'id':'素材一','topics':['长'*90]}],self.d/'long')
+        self.assertFalse((self.d/'long').exists())
     def assert_wiki_collision(self,ids,topics,conflicts):
         rows=[{'id':rid,'source_id':'s','location':'L1','quote':'完整文字：'+rid} for rid in ids]
         tags=[{'id':rid,'topics':[topic]} for rid,topic in zip(ids,topics)]

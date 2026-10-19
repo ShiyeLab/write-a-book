@@ -6,19 +6,29 @@ import shutil
 from pathlib import Path
 from urllib.parse import quote as urlquote
 from collections import defaultdict
-from _common import indexed, json_read, encode, check_output, run
+from _common import indexed, json_read, encode, check_output, write_new, run
+
+UNSAFE=set('%<>:"/\\|?*')
+MAX_NAME_BYTES=240
 
 def filename(value):
-    # 百分号也编码，避免两个不同 ID 清理后变成同名文件。
-    return urlquote(value,safe='')+'.md'
+    # 汉字等原样保留；仅百分号编码各平台的非法字符、控制字符及首尾的点和空格。
+    # 百分号本身也编码，避免两个不同 ID 清理后变成同名文件。
+    last=len(value)-1
+    return ''.join(''.join('%%%02X'%b for b in c.encode()) if c in UNSAFE or ord(c)<32 or ord(c)==127
+                   or (c=='.' and i==0) or (c in '. ' and i==last) else c
+                   for i,c in enumerate(value))+'.md'
 
 def link_name(name):
-    return urlquote(name,safe='')
+    # 链接只编码 ASCII 保留字符；非 ASCII 原样写入，便于阅读。
+    return ''.join(c if ord(c)>127 else urlquote(c,safe='') for c in name)
 
 def check_filenames(names,label):
     seen={}
     for name in names:
         generated=filename(name);folded=generated.casefold()
+        if len(generated.encode('utf-8'))>MAX_NAME_BYTES:
+            raise ValueError(f'{label}名称过长：{name[:20]!r}… 生成的文件名超过 {MAX_NAME_BYTES} 字节（约 80 个汉字），请缩短')
         if folded in seen and seen[folded]!=name:
             other=seen[folded]
             raise ValueError(f'{label}文件名大小写冲突：{other!r} ({filename(other)}) 与 {name!r} ({generated})')
@@ -51,15 +61,15 @@ def build(cards,tags,output):
             header='# 素材 '+rid+'\n\n来源：'+row['source_id']+'；位置：'+row['location']+'\n\n'
             if m.get('summary'): header+='摘要（非原文）：'+m['summary']+'\n\n'
             if m.get('related_ids'): header+='关联：'+', '.join('['+x+']('+link_name(filename(x))+')' for x in m['related_ids'])+'\n\n'
-            (stage/'entries'/filename(rid)).write_text(header+'<!-- full-quote -->\n'+row['quote'],encoding='utf-8')
+            write_new(stage/'entries'/filename(rid),header+'<!-- full-quote -->\n'+row['quote'])
         top=['# 素材索引','',f'独立素材 {len(rows)} 条。主题视图只链接到正式条目。','']
         for topic,ids in sorted(topics.items()):
             name=filename(topic);top.append('['+topic+'](topics/'+link_name(name)+')')
-            (stage/'topics'/name).write_text('# '+topic+'\n\n'+'\n'.join('- ['+i+'](../entries/'+link_name(filename(i))+')' for i in ids)+'\n',encoding='utf-8')
-        (stage/'README.md').write_text('\n\n'.join(top)+'\n',encoding='utf-8')
-        (stage/'cards.json').write_text(encode(cards),encoding='utf-8')
-        (stage/'keywords.json').write_text(encode(dict(keywords)),encoding='utf-8')
-        (stage/'index.json').write_text(encode({k:'entries/'+filename(k) for k in rows}),encoding='utf-8')
+            write_new(stage/'topics'/name,'# '+topic+'\n\n'+'\n'.join('- ['+i+'](../entries/'+link_name(filename(i))+')' for i in ids)+'\n')
+        write_new(stage/'README.md','\n\n'.join(top)+'\n')
+        write_new(stage/'cards.json',encode(cards))
+        write_new(stage/'keywords.json',encode(dict(keywords)))
+        write_new(stage/'index.json',encode({k:'entries/'+filename(k) for k in rows}))
         if out.exists(): raise ValueError('输出已存在')
         os.rename(stage,out)
     finally:
