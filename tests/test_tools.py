@@ -52,6 +52,13 @@ class Tools(unittest.TestCase):
     def test_inject_legacy_spacing_and_metadata(self):
         text,count=number_text('# OCR\n---\n\n# 标题\n\n未完\n\n续句。 下一句！')
         self.assertEqual(count,3);self.assertNotIn('OCR',text);self.assertIn('未完续句。',text)
+    def test_inject_yaml_front_matter(self):
+        text,count=number_text('---\ntitle: 访谈记录\ntags:\n  - 口述\n---\n他说：“我记得。”然后走了。')
+        self.assertEqual(text,'L00001: 他说：“我记得。”\nL00002: 然后走了。\n')
+        text,_=number_text('---\n第一段正文。\n---\n第二段正文。')
+        self.assertIn('第一段正文。',text)
+        text,_=number_text('---\ntitle: 未闭合\n正文。')
+        self.assertIn('title: 未闭合',text)
     def test_inject_long_sentence_control_and_punctuation(self):
         source='测'*240
         out,count=number_text(source);self.assertEqual(count,3)

@@ -3,7 +3,7 @@
   "original": "../../raw/form.txt",
   "original_sha256": "79234b40e94d7df9a14c009f95b941e4b4fadcd4876da23e3fc8334146004d1e",
   "position_type": "sentence-lines",
-  "algorithm": "sentence-v2",
+  "algorithm": "sentence-v3",
   "segments": 4,
   "sha256": "d31edfc365612a689bffd0e2f75dfc2cde0978afa3c3a4964a4b6b44b4afb542"
 }

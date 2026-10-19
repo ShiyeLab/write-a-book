@@ -202,6 +202,19 @@ def _hard_cut(s: str, n: int) -> list:
     """每 n 字硬切一段。"""
     return [s[i:i + n] for i in range(0, len(s), n)] if s else []
 
+YAML_LINE_RE = re.compile('^(\\s+\\S|[^\\s:#][^:]*:(\\s|$)|-(\\s|$)|#|\\s*$)')
+
+def yaml_front_matter(lines: list) -> int:
+    """首行起的 YAML front matter 行数（含首尾分隔线）；不是则返回 0。"""
+    if not lines or lines[0].strip() != '---':
+        return 0
+    for (i, line) in enumerate(lines[1:], start=1):
+        if line.strip() in ('---', '...'):
+            return i + 1 if i > 1 else 0
+        if not YAML_LINE_RE.match(line):
+            return 0
+    return 0
+
 def is_metadata_header(lines: list) -> int:
     """返回从第 0 行起的元数据行数。
 
@@ -213,7 +226,14 @@ def is_metadata_header(lines: list) -> int:
 
     只有当开头的连续 `#`/`---`/空行块里包含 `---` 分隔线时，才视为元数据；
     否则当作正文（避免把 `# 开篇` 这种章节标题误吞）。
+
+    Markdown 编辑器常见的 YAML front matter（首行 `---`，以 `---` 或 `...`
+    收尾，中间均为 YAML 形态的行）整体视为元数据；中间出现正文形态的行
+    则不认作 front matter，避免把以分隔线开头的正文整段吞掉。
     """
+    yaml_end = yaml_front_matter(lines)
+    if yaml_end:
+        return yaml_end
     end = 0
     has_separator = False
     for (i, line) in enumerate(lines):
@@ -289,7 +309,7 @@ def main():
     content,count=number_text(read(a.source))
     if not count: raise ValueError('输入没有正文')
     metadata={'source_id':a.source_id,'original':os.path.relpath(Path(a.source).resolve(),out.resolve().parent),
-        'original_sha256':digest(a.source),'position_type':'sentence-lines','algorithm':'sentence-v2','segments':count}
+        'original_sha256':digest(a.source),'position_type':'sentence-lines','algorithm':'sentence-v3','segments':count}
     write_new(out,content); metadata['sha256']=digest(out);write_new(meta,encode(metadata))
     print(encode({'segments':count,'position_type':'sentence-lines'}),end='')
 if __name__=='__main__': raise SystemExit(run(main))
