@@ -76,7 +76,8 @@ def normalize_response(
     if adapter == 'deepseek_search':
         for source in raw.get('results',[]) or []:
             add_source(sources,seen,source.get('url'),source.get('title'),source.get('site_name'),source.get('summary') or source.get('snippet'),source.get('date'))
-        answer_parts=[s['snippet'] or s['title'] for s in sources]
+        # 各条摘要独立成行，避免首尾相接读成一句。
+        answer_parts=['\n'.join(s['snippet'] or s['title'] for s in sources)]
         search_call_seen=bool(sources)
     elif adapter in {"responses_annotations", "responses_action_sources"}:
         for output in raw.get("output", []) or []:

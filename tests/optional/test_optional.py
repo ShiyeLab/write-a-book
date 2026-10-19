@@ -175,6 +175,8 @@ class Optional(unittest.TestCase):
         raw={'results':[{'url':'https://example.org/a','title':'模拟来源','summary':'模拟搜索摘要'}]}
         r=search.normalize(p,'Q',raw);self.assertEqual(r['status'],'success');self.assertFalse(r['evidence_eligible'])
         self.assertNotEqual(search.normalize(p,'Q',{'results':[]})['status'],'success')
+        two={'results':[{'url':'https://example.org/a','summary':'第一条。'},{'url':'https://example.org/b','summary':'第二条'}]}
+        self.assertEqual(search.normalize(p,'Q',two)['answer'],'第一条。\n第二条')
         files=[]
         for name in ['kimi','another-search']:
             f=self.d/(name+'.json');f.write_text(json.dumps({'provider':name,'query':'Q','answer':'模拟','web_search_confirmed':True,'simulated':True,'sources':[{'url':'https://example.org/'+name}]}),encoding='utf-8');files.append(f)
