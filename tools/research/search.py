@@ -14,12 +14,14 @@ from urllib.error import HTTPError
 from adapters import build_payload,normalize_response,utc_now
 
 ADAPTERS={'deepseek_search','responses_annotations','responses_action_sources','qianfan_ai_search','gemini_grounding'}
+# 凭证参数按精确名称识别；keyword、author 等普通参数保留，来源 URL 不被改写。
+CREDENTIAL_PARAM=re.compile(r'^(key|api[-_]?key|access[-_]?token|token|auth|auth[-_]?token|authorization|secret|client[-_]?secret|password|passwd|pwd|signature|sig|session[-_]?id|jwt|credentials?)$|[-_]token$|^x-(amz|goog)-',re.I)
 
 def safe_url(value):
     try:
         u=urlsplit(value)
         if u.scheme not in ['http','https'] or not u.hostname or u.username or u.password:return ''
-        query=[(k,v) for k,v in parse_qsl(u.query,keep_blank_values=True) if not re.search('key|token|auth|secret|signature|password|credential',k,re.I)]
+        query=[(k,v) for k,v in parse_qsl(u.query,keep_blank_values=True) if not CREDENTIAL_PARAM.search(k)]
         return urlunsplit((u.scheme,u.netloc,u.path,urlencode(query),''))
     except (ValueError,TypeError):return ''
 

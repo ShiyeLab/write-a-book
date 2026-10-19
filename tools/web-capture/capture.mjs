@@ -6,10 +6,12 @@ import { pathToFileURL } from 'node:url';
 export function signals(text) {
   return [['login',/请登录|登录后|please log ?in|sign ?in to continue/i],['captcha',/验证码|人机验证|captcha|are you human/i],['paywall',/付费阅读|会员专享|subscribe to read/i],['forbidden',/访问被拒|access denied|forbidden/i]].filter(([,p])=>p.test(text.slice(0,8000))).map(([k])=>k);
 }
+// 凭证参数按精确名称识别；keyword、author 等普通参数保留。与 search.py 的规则一致。
+const CREDENTIAL_PARAM=/^(key|api[-_]?key|access[-_]?token|token|auth|auth[-_]?token|authorization|secret|client[-_]?secret|password|passwd|pwd|signature|sig|session[-_]?id|jwt|credentials?)$|[-_]token$|^x-(amz|goog)-/i;
 export function publicUrl(value) {
   const u=new URL(value);
   if (!['http:','https:'].includes(u.protocol) || u.username || u.password) throw Error('invalid_url');
-  for (const k of [...u.searchParams.keys()]) if (/key|token|auth|secret|signature|password|credential/i.test(k)) u.searchParams.delete(k);
+  for (const k of [...u.searchParams.keys()]) if (CREDENTIAL_PARAM.test(k)) u.searchParams.delete(k);
   u.hash='';return u.href;
 }
 function proxyFor(url) {
@@ -26,7 +28,7 @@ export async function capture({url,output,timeout=30000,minText=80,executablePat
   // 带鉴权查询参数的 URL 不发送也不存盘；使用者需提供可公开获取的页面。
   if (safe!==new URL(url).href.replace(/#.*$/,'')) throw Error('credential_or_noncanonical_query_not_supported');
   await fs.mkdir(output,{recursive:false});
-  const metadata={url:safe,acquired:'failed',content:'unusable',failureKinds:[],visual:null,capturedAt:new Date().toISOString()};
+  const metadata={url:safe,acquired:'failed',content:'unusable',accessSignals:[],visual:null,capturedAt:new Date().toISOString()};
   let browser;
   try {
     const [{chromium},{JSDOM},{Readability},{default:Turndown}]=await Promise.all([import('playwright'),import('jsdom'),import('@mozilla/readability'),import('turndown')]);
@@ -37,9 +39,10 @@ export async function capture({url,output,timeout=30000,minText=80,executablePat
     metadata.url=publicUrl(page.url());
     metadata.acquired=response && response.ok()?'success':'failed';
     const visible=await page.locator('body').innerText({timeout});
-    metadata.failureKinds=signals(visible+' '+await page.title());
+    // 登录、付费等字样常见于导航和按钮（如“登录后复制”），只作核对提示，不阻止取正文。
+    metadata.accessSignals=signals(visible+' '+await page.title());
     let html='',text='';
-    if (metadata.acquired==='success' && !metadata.failureKinds.length) {
+    if (metadata.acquired==='success') {
       for (const selector of ['main','article','[role="main"]','.markdown-body','.content']) {
         const el=page.locator(selector).first();
         if (await el.count()) {
@@ -67,7 +70,7 @@ export async function capture({url,output,timeout=30000,minText=80,executablePat
   } finally {
     if(browser)await browser.close();
     const visualFailed=metadata.visual&&Object.values(metadata.visual).some(r=>r.status!=='success');
-    metadata.status=metadata.content==='needs_source_review'?(metadata.error||visualFailed?'partial':'success'):'failed';
+    metadata.status=metadata.content==='needs_source_review'?(metadata.error||visualFailed||metadata.accessSignals.length?'partial':'success'):'failed';
     await fs.writeFile(path.join(output,'metadata.json'),JSON.stringify(metadata,null,2)+'\n',{flag:'wx'});
   }
   return metadata;

@@ -135,7 +135,7 @@ node tools/web-capture/capture.mjs 'https://example.org/page' --output /tmp/book
 
 输出父目录须存在，目标目录须为新目录。默认用 DOM／Readability 提取正文，只保存可读 `body.md` 和 `metadata.json`，不自动保存截图、上传图像或调用视觉服务。`--timeout` 单位毫秒，可设 1000—180000；`--min-text` 调整候选正文最少字符，默认 80。
 
-获取状态 `acquired` 和内容状态 `content` 分开。登录、验证码、付费墙或空页不生成证据正文；`needs_source_review` 表示候选正文，仍须回原页核对。返回 0 表示采集到候选正文，3 表示正文保留但另选的视觉步骤未完成，1 表示未取得正文。短通知、复杂页面可能被保守过滤，需人工审阅；不自动登录或绕过访问限制。
+获取状态 `acquired` 和内容状态 `content` 分开。登录、验证码、付费墙、拒绝访问等字样记入 `accessSignals`，只作核对提示：这些字样常出现在导航或按钮中（如“登录后复制”），不阻止提取正文。取得足够正文时仍保存为候选，但状态降为部分完成，须回原页确认是否只是试读片段；未取得正文时，信号用于说明原因。空页不生成正文。`needs_source_review` 表示候选正文，仍须回原页核对。返回 0 表示采集到候选正文且无访问信号，3 表示正文保留但有访问信号或另选的视觉步骤未完成，1 表示未取得正文。短通知、复杂页面可能被保守过滤，需人工审阅；不自动登录或绕过访问限制。
 
 `--screenshot` 显式保存 `page.png`。如已授权上传截图，可用单独转录命令：
 
@@ -145,7 +145,7 @@ node tools/web-capture/vlm-bridge.mjs --image /tmp/book-web-page/page.png --outp
 
 从 [视觉配置样例](../tools/web-capture/providers.example.json)复制并填自己的模型和变量名；所选一路可独立运行，未选服务缺 Key 不阻止它。支持 Gemini 和 chat-completions 视觉响应，单路文本及记录保存到 `routes/<路线ID>.md`、`routes/<路线ID>.json`，根目录保留绑定和总报告。旧布局会提示使用新输出目录。`--responses` 可离线回放；`--resume` 绑定截图、所选配置和模式，成功文本校验后复用，未知结果须查明后显式 `--retry-unknown`。超时有上限，无自动重试。也可在采集时显式加 `--execute-vision --vision-config FILE --vision-routes a,b`，两步结果仍分别报告。
 
-工具遵从用户代理环境，不在导入时改写 `NO_PROXY`；不导入浏览器个人账号。带鉴权查询参数的输入 URL 不发送；错误日志不打印请求头或原始响应。
+工具遵从用户代理环境，不在导入时改写 `NO_PROXY`；不导入浏览器个人账号。带鉴权查询参数的输入 URL 不发送；鉴权参数按精确名称识别（如 `api_key`、`access_token`、`token`、`signature`、`*_token`、`X-Amz-*`），`keyword`、`author` 等普通参数保留，检索来源 URL 同样按此规则清理；错误日志不打印请求头或原始响应。
 
 ## 环境与教学回放
 

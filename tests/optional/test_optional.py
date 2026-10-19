@@ -124,6 +124,9 @@ class Optional(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'changed'):search.execute(ps,'OTHER',out,responses={},resume=True)
         file=out/'routes/doubao.json';data=json.loads(file.read_text(encoding='utf-8'));data['answer']='';file.write_text(json.dumps(data),encoding='utf-8')
         r=search.execute(ps,'Q',out,responses={},resume=True);self.assertEqual(r['status'],'no_usable_results')
+    def test_safe_url_keeps_ordinary_params(self):
+        self.assertEqual(search.safe_url('https://example.org/s?keyword=a&author=b&page=2'),'https://example.org/s?keyword=a&author=b&page=2')
+        self.assertEqual(search.safe_url('https://example.org/f?id=1&api_key=X&csrf_token=Y&X-Amz-Signature=Z&sig=W'),'https://example.org/f?id=1')
     def test_redaction_and_proxy_preserved(self):
         sentinel='FAKE_TEST_TOKEN_NOT_A_KEY';p={**self.providers()[0],'model':'teaching'};before=dict(os.environ)
         with patch.dict(os.environ,{p['key_env']:sentinel}),patch('search.request',return_value=response(sentinel,'https://example.org/a?token='+sentinel)):
