@@ -17,8 +17,12 @@ def sha(path):
         for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
     return h.hexdigest()
 
+def write_lf(path,text):
+    # 各平台统一 LF；Path.write_text 在 Windows 会转成 CRLF。
+    with open(path,'w',encoding='utf-8',newline='\n') as f:f.write(text)
+
 def save(path,value):
-    Path(path).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    write_lf(path,json.dumps(value,ensure_ascii=False,indent=2)+'\n')
 
 def status(items):
     if items and all(x['status']=='success' for x in items):return 'success'
@@ -176,7 +180,7 @@ def main():
             state=status(rows)
             if not any(r['text'].strip() for r in rows):state='failed'
             if unsupported and state=='success':state='partial'
-            name=f'{i:04}.md';(a.output/name).write_text(text+'\n',encoding='utf-8')
+            name=f'{i:04}.md';write_lf(a.output/name,text+'\n')
             rec.update(status=state,text_file=name,objects=rows,unsupported=unsupported)
             phase='report';records[i-1]=rec;save_progress(a.output,records);report_pending=False
             continue

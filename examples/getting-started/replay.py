@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2];HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(ROOT/'tools'))
-from _common import encode,digest,sources
+from _common import encode,digest,sources,write_new
 from verify_quotes import verify
 
 def main():
@@ -31,8 +31,8 @@ def main():
     for version,name,location in [('v1','supplement-v1.txt','L2'),('v2','supplement-v2.txt','L3'),('new','new-note.txt','L2')]:
         folder=out/version;folder.mkdir()
         run('tools/inject_lines.py',[raw/name,'--source-id','S1' if version!='new' else 'S2','--output',folder/'lined.txt'])
-        (folder/'sources.json').write_text(encode([{'id':'S1' if version!='new' else 'S2','path':'lined.txt','sha256':digest(folder/'lined.txt'),'position_type':'sentence-lines'}]),encoding='utf-8')
-        (folder/'requests.json').write_text(encode([{'id':'Q1' if version!='new' else 'Q2','source_id':'S1' if version!='new' else 'S2','location':location,'source_kind':'teaching'}]),encoding='utf-8')
+        write_new(folder/'sources.json',encode([{'id':'S1' if version!='new' else 'S2','path':'lined.txt','sha256':digest(folder/'lined.txt'),'position_type':'sentence-lines'}]))
+        write_new(folder/'requests.json',encode([{'id':'Q1' if version!='new' else 'Q2','source_id':'S1' if version!='new' else 'S2','location':location,'source_kind':'teaching'}]))
         run('tools/extract_quotes.py',[folder/'requests.json','--sources',folder/'sources.json','--output',folder/'cards.json'])
         run('tools/verify_quotes.py',[folder/'cards.json','--sources',folder/'sources.json'])
         run('tools/build_wiki.py',[folder/'cards.json','--output',folder/'wiki'])
@@ -46,5 +46,5 @@ def main():
     assert duplicate_id=='S1' and len(register)==2
     counts={p.name:len(re.findall('[\u4e00-\u9fff]',p.read_text(encoding='utf-8'))) for p in (HERE/'chapters').glob('*.md')}
     report={'status':'teaching_checks_passed','records':records,'ocr':'not_run; reference transcript is author-provided','research':'offline_simulation; not live search','extraction':extraction['status'],'old_version_rejected':True,'index_not_complete_source':True,'duplicate_source_id':duplicate_id,'registered_sources_after_duplicate':len(register),'chapter_basic_hanzi':counts,'total_basic_hanzi':sum(counts.values()),'author_feedback':'prewritten teaching decision; next task not executed'}
-    (out/'report.json').write_text(encode(report),encoding='utf-8');print(encode(report))
+    write_new(out/'report.json',encode(report));print(encode(report))
 if __name__=='__main__':main()

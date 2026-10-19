@@ -142,7 +142,8 @@ def execute(providers,query,out,live=False,responses=None,native_path=None,resum
     write(out/'report.json',clean(report,secrets));return report
 
 def fingerprint(record):return hashlib.sha256(json.dumps(record,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
-def write(path,value):path.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+def write(path,value):
+    with open(path,'w',encoding='utf-8',newline='\n') as f:f.write(json.dumps(value,ensure_ascii=False,indent=2)+'\n')
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',type=Path,default=Path(__file__).with_name('providers.example.json'));p.add_argument('--routes',help='显式逗号分隔路线');p.add_argument('--preflight',action='store_true');p.add_argument('--query');p.add_argument('--output',type=Path);p.add_argument('--execute',action='store_true');p.add_argument('--responses',type=Path);p.add_argument('--native-record',type=Path,action='append',help='可重复指定不同工具的实际搜索记录');p.add_argument('--resume',action='store_true');p.add_argument('--timeout',type=float,default=60);p.add_argument('--retries',type=int,default=0);p.add_argument('--retry-unknown',action='store_true',help='查明服务端状态及重试安全后使用');p.add_argument('--concurrency',type=int,default=1,help='自行选择并发路线数；默认逐路，不限定路线总数');a=p.parse_args()

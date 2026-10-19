@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 from urllib.request import Request,urlopen
 from urllib.error import HTTPError
-from extract import sha,save,status,code
+from extract import sha,save,status,code,write_lf
 
 PROMPT='逐字转录这一页全部文字，保留段落；不解释不补写。看不清处标为[待核]。空白页不要编写文字。'
 
@@ -96,7 +96,7 @@ def run(source,output,engine,pages,dpi,model,language,resume=False,responses=Non
                 else:text=cloud(engine,png,model,key,timeout,retries)
                 if not text.strip():raise ValueError('empty_response')
                 if key:text=text.replace(key,'[REDACTED]')
-                text_path.write_text(text,encoding='utf-8')
+                write_lf(text_path,text)
                 rec={'page':n,'status':'success','file':text_path.name,'text_sha256':sha(text_path),'quality':'not_reviewed'}
             except Exception as e:
                 allowed=['service_error','missing_candidate','incomplete_response','page_response_mismatch','page_error','empty_response','request_result_unknown','invalid_response']
@@ -107,7 +107,7 @@ def run(source,output,engine,pages,dpi,model,language,resume=False,responses=Non
             save(output/'report.json',{'status':status(records+[{'status':'not_processed'} for _ in range(n,len(doc))]),'total_pages':len(doc),'processed_through':n,'records':records+[{'page':i,'status':'not_processed'} for i in range(n+1,len(doc)+1)],'quality':'not_reviewed','mode':binding['mode']})
         report={'status':status(records),'total_pages':len(doc),'records':records,'quality':'not_reviewed','mode':binding['mode']}
         save(output/'report.json',report)
-        (output/'text.md').write_text('\n\n'.join(f"<!-- page {r['page']} [{r['status']}] -->\n"+((output/r['file']).read_text(encoding='utf-8') if r['status']=='success' else '') for r in records)+'\n',encoding='utf-8')
+        write_lf(output/'text.md','\n\n'.join(f"<!-- page {r['page']} [{r['status']}] -->\n"+((output/r['file']).read_text(encoding='utf-8') if r['status']=='success' else '') for r in records)+'\n')
         return report
     finally:doc.close()
 
