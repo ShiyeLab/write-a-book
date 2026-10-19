@@ -314,7 +314,11 @@ def main():
     a=p.parse_args(); out=check_output(a.output,[a.source]); meta=check_output(str(out)+'.meta.json',[a.source])
     content,count=number_text(read(a.source))
     if not count: raise ValueError('输入没有正文')
-    metadata={'source_id':a.source_id,'original':os.path.relpath(Path(a.source).resolve(),out.resolve().parent),
+    original=Path(a.source).resolve()
+    # Windows 下原件与输出不在同一盘符时没有相对路径，改记绝对路径。
+    try: original=Path(os.path.relpath(original,out.resolve().parent)).as_posix()
+    except ValueError: original=original.as_posix()
+    metadata={'source_id':a.source_id,'original':original,
         'original_sha256':digest(a.source),'position_type':'sentence-lines','algorithm':'sentence-v4','segments':count}
     write_new(out,content); metadata['sha256']=digest(out);write_new(meta,encode(metadata))
     print(encode({'segments':count,'position_type':'sentence-lines'}),end='')
