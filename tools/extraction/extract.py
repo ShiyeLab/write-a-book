@@ -82,12 +82,13 @@ def pdf(path):
     with fitz.open(path) as doc:
         for i,p in enumerate(doc):
             try:
-                t=p.get_text(sort=True);images=len(p.get_images())
+                # 按内容流顺序取文字；按坐标排序会把双栏版面左右交错。
+                t=p.get_text();images=len(p.get_images())
                 st='success' if t.strip() else ('needs_ocr' if images else 'empty_needs_review')
                 if t.strip() and images:st='partial' # 图像区域仍须确认是否含文字
                 rows.append(item('page/'+str(i+1),t,st,images=images,printed_page=p.get_label()))
             except Exception:rows.append(item('page/'+str(i+1),'','failed'))
-    return rows,{}, {'known_limits':['逐页文字层，不是版面复刻；无文字不自动判定空白，混合图像区域需核对']}
+    return rows,{}, {'text_order':'content_stream','known_limits':['逐页文字层，不是版面复刻；按内容流顺序，个别文件的阅读顺序仍需对原件核对；无文字不自动判定空白，混合图像区域需核对']}
 
 def pptx(path):
     from pptx import Presentation

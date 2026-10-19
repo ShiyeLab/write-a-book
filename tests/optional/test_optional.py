@@ -42,6 +42,15 @@ class Optional(unittest.TestCase):
         rows,_,_=extract.extract(RAW/'mixed.pdf')
         self.assertEqual([r['position'] for r in rows],['page/1','page/2','page/3'])
         self.assertEqual([r['status'] for r in rows],['success','needs_ocr','empty_needs_review'])
+    def test_pdf_two_columns_keep_content_order(self):
+        import fitz
+        doc=fitz.open();page=doc.new_page()
+        for i in range(3):page.insert_text((40,100+i*40),f'左栏第{i+1}句。',fontname='china-s')
+        for i in range(3):page.insert_text((320,104+i*40),f'右栏第{i+1}句。',fontname='china-s')
+        doc.save(self.d/'two.pdf');doc.close()
+        rows,_,details=extract.extract(self.d/'two.pdf')
+        self.assertEqual(rows[0]['text'].split(),[f'左栏第{i}句。' for i in (1,2,3)]+[f'右栏第{i}句。' for i in (1,2,3)])
+        self.assertEqual(details['text_order'],'content_stream')
     def test_slides_and_spreadsheets(self):
         rows,_,_=extract.extract(RAW/'brief.pptx');self.assertIn('菜豆',''.join(r['text'] for r in rows));self.assertEqual(len(rows),2)
         rows,_,_=extract.extract(RAW/'counts.xlsx');c=next(r for r in rows if r['position']=='清点!B3');self.assertEqual(c['formula'],'=B2+1');self.assertIsNone(c['cached_value'])
