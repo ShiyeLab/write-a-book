@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -10,7 +11,7 @@ sys.path.insert(0,str(ROOT/'tools'))
 from _common import encode,write_new,check_output
 
 def cli(tool,*args,report=None):
-    result=subprocess.run([sys.executable,str(ROOT/'tools'/tool),*map(str,args)],text=True,capture_output=True)
+    result=subprocess.run([sys.executable,str(ROOT/'tools'/tool),*map(str,args)],encoding='utf-8',capture_output=True,env={**os.environ,'PYTHONIOENCODING':'utf-8'})
     if result.returncode: raise RuntimeError(tool+': '+result.stderr+result.stdout)
     if report:write_new(report,result.stdout)
     return result.stdout
@@ -31,20 +32,20 @@ def main():
             cli('build_wiki.py',out/'cards.json','--tags',src/'tags.json','--output',out/'wiki')
             cli('verify_style_sources.py',src/'style/evidence.json','--samples',src/'style/samples',report=out/'style-report.json')
             cli('build_wiki.py',src/'long-fixtures.json','--output',out/'long-wiki')
-            originals=json.loads((src/'long-fixtures.json').read_text())
+            originals=json.loads((src/'long-fixtures.json').read_text(encoding='utf-8'))
             from build_wiki import filename
             for row in originals:
-                body=(out/'long-wiki/entries'/filename(row['id'])).read_text().split('<!-- full-quote -->\n',1)[1]
+                body=(out/'long-wiki/entries'/filename(row['id'])).read_text(encoding='utf-8').split('<!-- full-quote -->\n',1)[1]
                 if body!=row['quote']:raise ValueError('长摘录未完整保存')
             write_new(out/'long-report.json',encode({'lengths':[len(x['quote']) for x in originals],'full_text_equal':True,'final_newline_in_quote':[x['quote'].endswith('\n') for x in originals]}))
     elif a.example=='abridgement':
         cli('apply_cuts.py',src/'cuts.json','--base',src,'--output',out/'pure.md','--report',out/'counts.json','--require-budget')
-        pure=(out/'pure.md').read_text();needle='白岩收好纸张'
+        pure=(out/'pure.md').read_text(encoding='utf-8');needle='白岩收好纸张'
         marked=pure.replace(needle,'【接缝：下段放回铅笔的动作，早先铺垫已删；请判断是否恢复。】\n【补写：登记台的铅笔也收了起来。】\n'+needle,1)
         write_new(out/'marked.md',marked)
         cli('verify_seams.py',out/'marked.md',out/'pure.md',report=out/'seam-report.json')
     elif a.example=='polishing':
-        original=(src/'original.md').read_text();revised=(src/'revised.md').read_text()
+        original=(src/'original.md').read_text(encoding='utf-8');revised=(src/'revised.md').read_text(encoding='utf-8')
         if original.split('\n\n',2)[2]!=revised.split('\n\n',2)[2]:raise ValueError('首段以外有变化')
         for token in ['12张','周栩','蓝色条纹','地址']:
             if token not in revised:raise ValueError('保留项缺失')

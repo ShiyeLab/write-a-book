@@ -74,7 +74,7 @@ def run(source,output,engine,pages,dpi,model,language,resume=False,responses=Non
         binding={'input_sha256':sha(source),'pages':selected,'engine':engine,'dpi':dpi,'model':model,'languages':language,'mode':'offline_fixture' if responses is not None else 'actual','algorithm':'page-ocr-v1','prompt':PROMPT}
         if output.exists():
             if not resume:raise ValueError('output_exists')
-            if json.loads((output/'binding.json').read_text())!=binding:raise ValueError('resume_input_or_parameters_changed')
+            if json.loads((output/'binding.json').read_text(encoding='utf-8'))!=binding:raise ValueError('resume_input_or_parameters_changed')
         else:output.mkdir(parents=True);save(output/'binding.json',binding)
         records=[]
         for n in range(1,len(doc)+1):
@@ -82,9 +82,9 @@ def run(source,output,engine,pages,dpi,model,language,resume=False,responses=Non
             print(f'page {n}/{len(doc)}',flush=True)
             text_path=output/f'p{n:04}.txt';record_path=output/f'p{n:04}.json'
             if resume and record_path.exists():
-                old=json.loads(record_path.read_text())
+                old=json.loads(record_path.read_text(encoding='utf-8'))
                 if old.get('error')=='request_result_unknown' and not retry_unknown:records.append(old);continue
-                if old.get('status')=='success' and text_path.exists() and old.get('text_sha256')==sha(text_path) and text_path.read_text().strip():records.append(old);continue
+                if old.get('status')=='success' and text_path.exists() and old.get('text_sha256')==sha(text_path) and text_path.read_text(encoding='utf-8').strip():records.append(old);continue
             try:
                 png=doc[n-1].get_pixmap(dpi=dpi).tobytes('png')
                 if responses is not None:text=response_text(engine,responses.get(str(n),{}))
@@ -107,14 +107,14 @@ def run(source,output,engine,pages,dpi,model,language,resume=False,responses=Non
             save(output/'report.json',{'status':status(records+[{'status':'not_processed'} for _ in range(n,len(doc))]),'total_pages':len(doc),'processed_through':n,'records':records+[{'page':i,'status':'not_processed'} for i in range(n+1,len(doc)+1)],'quality':'not_reviewed','mode':binding['mode']})
         report={'status':status(records),'total_pages':len(doc),'records':records,'quality':'not_reviewed','mode':binding['mode']}
         save(output/'report.json',report)
-        (output/'text.md').write_text('\n\n'.join(f"<!-- page {r['page']} [{r['status']}] -->\n"+((output/r['file']).read_text() if r['status']=='success' else '') for r in records)+'\n',encoding='utf-8')
+        (output/'text.md').write_text('\n\n'.join(f"<!-- page {r['page']} [{r['status']}] -->\n"+((output/r['file']).read_text(encoding='utf-8') if r['status']=='success' else '') for r in records)+'\n',encoding='utf-8')
         return report
     finally:doc.close()
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('input',type=Path);p.add_argument('--output',required=True,type=Path);p.add_argument('--engine',required=True,choices=['apple','gemini','cloud-vision']);p.add_argument('--pages',help='物理页序，例如 1,2,4');p.add_argument('--dpi',type=int,default=200);p.add_argument('--model');p.add_argument('--languages',default='zh-Hans,en-US');p.add_argument('--resume',action='store_true');p.add_argument('--responses',type=Path,help='仅离线模拟：页序到响应对象的 JSON');p.add_argument('--execute',action='store_true');p.add_argument('--key-env');p.add_argument('--timeout',type=float,default=60);p.add_argument('--retries',type=int,default=0);p.add_argument('--retry-unknown',action='store_true',help='仅在查明可安全重试后显式启用');a=p.parse_args()
     try:
-        report=run(a.input,a.output,a.engine,[int(x) for x in a.pages.split(',')] if a.pages else None,a.dpi,a.model,a.languages.split(','),a.resume,json.loads(a.responses.read_text()) if a.responses else None,a.execute,a.key_env,a.timeout,a.retries,a.retry_unknown)
+        report=run(a.input,a.output,a.engine,[int(x) for x in a.pages.split(',')] if a.pages else None,a.dpi,a.model,a.languages.split(','),a.resume,json.loads(a.responses.read_text(encoding='utf-8')) if a.responses else None,a.execute,a.key_env,a.timeout,a.retries,a.retry_unknown)
         print(report['status']);return code(report['status'])
     except ImportError:print('缺可选依赖：按 docs/optional-tools.md 安装 PyMuPDF；Apple 路线另需 ocrmac。',file=sys.stderr);return 1
     except Exception as e:

@@ -30,7 +30,7 @@ class ReviewFixes(unittest.TestCase):
         self.temp=tempfile.TemporaryDirectory();self.d=Path(self.temp.name)
     def tearDown(self):self.temp.cleanup()
     def cli(self,tool,*args):
-        return subprocess.run([sys.executable,str(ROOT/tool),*map(str,args)],capture_output=True,text=True)
+        return subprocess.run([sys.executable,str(ROOT/tool),*map(str,args)],capture_output=True,encoding='utf-8',env={**os.environ,'PYTHONIOENCODING':'utf-8'})
     def word(self,name,body):
         path=self.d/name
         document=('<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
@@ -46,12 +46,12 @@ class ReviewFixes(unittest.TestCase):
             '</m:oMathPara></w:p></w:tc></w:tr></w:tbl><w:p><w:r><w:t>End.</w:t></w:r></w:p>')
         out=self.d/'output';result=self.cli('tools/extraction/extract.py',source,'--output',out)
         self.assertEqual(result.returncode,3,result.stderr)
-        report=json.loads((out/'report.json').read_text());record=report['records'][0]
+        report=json.loads((out/'report.json').read_text(encoding='utf-8'));record=report['records'][0]
         self.assertEqual(record['status'],'partial');self.assertEqual(record['unsupported']['office_math'],2)
         self.assertEqual([(r['position'],r['kind'],r['office_math']) for r in record['unsupported_ranges']],
                          [('document.xml/body/1','paragraph',1),('document.xml/body/2','table',1)])
         self.assertEqual([r['status'] for r in record['objects']],['partial','partial','success'])
-        text=(out/'0001.md').read_text()
+        text=(out/'0001.md').read_text(encoding='utf-8')
         for expected in ['Formula:','Table:','End.']:self.assertIn(expected,text)
         self.assertNotIn('x + y = z',text)
     def test_math_without_usable_body_fails(self):
@@ -61,7 +61,7 @@ class ReviewFixes(unittest.TestCase):
                 source=self.word(name+'.docx',body);out=self.d/(name+'-out')
                 result=self.cli('tools/extraction/extract.py',source,'--output',out)
                 self.assertEqual(result.returncode,1,result.stderr)
-                report=json.loads((out/'report.json').read_text())
+                report=json.loads((out/'report.json').read_text(encoding='utf-8'))
                 self.assertEqual(report['status'],'failed');self.assertEqual(report['records'][0]['unsupported']['office_math'],1)
     def test_cache_temporal_types_and_ordinary_values(self):
         values=[(date(2026,10,19),'date','2026-10-19'),
@@ -107,7 +107,7 @@ class ReviewFixes(unittest.TestCase):
         file=self.spreadsheet();out=self.d/'batch'
         result=self.cli('tools/extraction/extract.py',file,RAW/'registration.docx','--output',out)
         self.assertEqual(result.returncode,0,result.stderr)
-        report=json.loads((out/'report.json').read_text());self.assertEqual([x['status'] for x in report['records']],['success','success'])
+        report=json.loads((out/'report.json').read_text(encoding='utf-8'));self.assertEqual([x['status'] for x in report['records']],['success','success'])
         cells={r['position']:r for r in report['records'][0]['objects']}
         self.assertEqual((cells['Cache!A1']['cached_value'],cells['Cache!A1']['cached_type']),('2026-10-19T00:00:00','datetime'))
         self.assertEqual((cells['Cache!B1']['cached_value'],cells['Cache!B1']['cached_type']),('12:00:00','time'))
@@ -117,7 +117,7 @@ class ReviewFixes(unittest.TestCase):
         for p in ['D1','E1','F1','G1']:self.assertNotIn('cached_type',cells['Cache!'+p])
         self.assertEqual(cells['Cache!A1']['formula'],'=DATE(2026,10,19)')
         self.assertEqual(cells['Cache!A1']['text'],'=DATE(2026,10,19)')
-        self.assertIn('12包',(out/'0002.md').read_text())
+        self.assertIn('12包',(out/'0002.md').read_text(encoding='utf-8'))
     def run_batch(self,out):
         args=['extract.py',str(RAW/'registration.docx'),str(RAW/'registration.docx'),str(RAW/'registration.docx'),'--output',str(out)]
         with patch.object(sys,'argv',args),contextlib.redirect_stdout(io.StringIO()):return extract.main()
@@ -130,7 +130,7 @@ class ReviewFixes(unittest.TestCase):
         out=self.d/'serialization'
         with patch('extract.extract',side_effect=input_result):result=self.run_batch(out)
         self.assertEqual(result,3);self.assertEqual(len(calls),3)
-        report=json.loads((out/'report.json').read_text())
+        report=json.loads((out/'report.json').read_text(encoding='utf-8'))
         self.assertEqual([r['status'] for r in report['records']],['success','failed','success'])
         self.assertEqual(report['records'][1]['error'],'report_write_failed')
         self.assertTrue((out/'0001.md').is_file());self.assertTrue((out/'0003.md').is_file())
@@ -139,13 +139,13 @@ class ReviewFixes(unittest.TestCase):
         def write(path,data):
             calls.append(True)
             if len(calls)==2:
-                previous=(out/'report.json').read_bytes();Path(path).write_text('incomplete')
+                previous=(out/'report.json').read_bytes();Path(path).write_text('incomplete',encoding='utf-8')
                 preserved.append((out/'report.json').read_bytes()==previous)
                 raise OSError('simulated write failure')
             return original(path,data)
         with patch('extract.save',side_effect=write):result=self.run_batch(out)
         self.assertEqual(result,3);self.assertEqual(preserved,[True])
-        report=json.loads((out/'report.json').read_text())
+        report=json.loads((out/'report.json').read_text(encoding='utf-8'))
         self.assertEqual([r['status'] for r in report['records']],['success','failed','success'])
         self.assertEqual(report['records'][1]['error'],'report_write_failed');self.assertFalse((out/'report.tmp').exists())
     def test_persistent_report_failure_returns_error_and_keeps_completed_snapshot(self):
@@ -156,7 +156,7 @@ class ReviewFixes(unittest.TestCase):
             return original(path,data)
         with patch('extract.save',side_effect=write),contextlib.redirect_stderr(io.StringIO()) as stderr:result=self.run_batch(out)
         self.assertEqual(result,1);self.assertIn('report_write_failed',stderr.getvalue())
-        report=json.loads((out/'report.json').read_text())
+        report=json.loads((out/'report.json').read_text(encoding='utf-8'))
         self.assertEqual([r['status'] for r in report['records']],['success','not_processed','not_processed'])
         self.assertTrue((out/'0003.md').is_file())
     def providers(self):
@@ -177,21 +177,21 @@ class ReviewFixes(unittest.TestCase):
         for name,(data,mtime) in cached.items():
             self.assertEqual((out/'routes'/(name+'.json')).read_bytes(),data)
             self.assertEqual((out/'routes'/(name+'.json')).stat().st_mtime_ns,mtime)
-        self.assertEqual(json.loads((out/'report.json').read_text())['status'],'success')
+        self.assertEqual(json.loads((out/'report.json').read_text(encoding='utf-8'))['status'],'success')
     def test_legacy_search_layout_rejected_before_request_or_write(self):
         providers=self.providers()
         for name in ['binding','report','regular']:
             with self.subTest(route=name):
                 out=self.d/name;out.mkdir()
-                (out/'binding.json').write_text(json.dumps({'algorithm':'search-v2'}))
-                (out/(name+'.json')).write_text(json.dumps({'provider':name,'status':'success','answer':'saved','sources':[{'url':'https://example.org/a'}]}))
+                (out/'binding.json').write_text(json.dumps({'algorithm':'search-v2'}),encoding='utf-8')
+                (out/(name+'.json')).write_text(json.dumps({'provider':name,'status':'success','answer':'saved','sources':[{'url':'https://example.org/a'}]}),encoding='utf-8')
                 before={p.name:p.read_bytes() for p in out.iterdir()}
                 with patch('search.request',side_effect=AssertionError('request must not run')) as request:
                     with self.assertRaisesRegex(ValueError,'unsupported_output_layout_use_new_directory'):
                         search.execute(providers,'Q',out,live=True,resume=True)
                     request.assert_not_called()
                 self.assertEqual({p.name:p.read_bytes() for p in out.iterdir()},before)
-        config=self.d/'config.json';config.write_text(json.dumps({'providers':providers}))
+        config=self.d/'config.json';config.write_text(json.dumps({'providers':providers}),encoding='utf-8')
         r=self.cli('tools/research/search.py','--config',config,'--routes','regular','--query','Q','--output',self.d/'regular','--execute','--resume')
         self.assertEqual(r.returncode,1);self.assertIn('请使用新输出目录',r.stderr)
 

@@ -27,7 +27,7 @@ class Tools(unittest.TestCase):
     def put(self,name,text):
         p=self.d/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(text,encoding='utf-8');return p
     def cli(self,name,*args):
-        return subprocess.run([sys.executable,str(ROOT/'tools'/name),*map(str,args)],cwd=self.d,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True)
+        return subprocess.run([sys.executable,str(ROOT/'tools'/name),*map(str,args)],cwd=self.d,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','PYTHONIOENCODING':'utf-8'},capture_output=True,encoding='utf-8')
     def fixture(self):
         p=self.put('lined.txt','L00001: 开始。\nL00002: 尾部无换行')
         registry={'S':{'id':'S','path':'lined.txt','sha256':digest(p),'position_type':'sentence-lines','_lines':lined(p)}}
@@ -87,18 +87,18 @@ class Tools(unittest.TestCase):
         src=self.put('s','L1: 甲');spec=[{'id':'S','path':'s','sha256':digest(src),'position_type':'sentence-lines'}]
         manifest=self.put('sources.json',encode(spec));self.assertEqual(len(sources(manifest)),1)
         for key,value in [('sha256','bad'),('path','absent'),('position_type','physical-lines')]:
-            row=copy.deepcopy(spec);row[0][key]=value;manifest.write_text(encode(row))
+            row=copy.deepcopy(spec);row[0][key]=value;manifest.write_text(encode(row),encoding='utf-8')
             with self.assertRaises((ValueError,OSError)):sources(manifest)
     def test_extract_cli_errors_write_nothing(self):
         req=self.put('request.json','[]');manifest=self.put('sources.json','[]')
         r=self.cli('extract_quotes.py',req,'--sources',manifest,'--output',self.d/'out')
         self.assertNotEqual(r.returncode,0);self.assertFalse((self.d/'out').exists())
     def test_wiki_long_no_newline_and_no_truncation(self):
-        rows=json.loads((ROOT/'examples/source-based/long-fixtures.json').read_text())
+        rows=json.loads((ROOT/'examples/source-based/long-fixtures.json').read_text(encoding='utf-8'))
         self.assertGreater(len(rows[0]['quote']),500);self.assertGreater(len(rows[1]['quote']),5000)
         build(rows,[],self.d/'wiki')
         for row in rows:
-            actual=(self.d/'wiki/entries'/filename(row['id'])).read_text().split('<!-- full-quote -->\n',1)[1]
+            actual=(self.d/'wiki/entries'/filename(row['id'])).read_text(encoding='utf-8').split('<!-- full-quote -->\n',1)[1]
             self.assertEqual(actual,row['quote']);self.assertFalse(actual.endswith('\n'))
     def test_wiki_bad_inputs_no_partial(self):
         row={'id':'x','source_id':'s','location':'L1','quote':'全文'}
@@ -132,16 +132,16 @@ class Tools(unittest.TestCase):
         rows=[{'id':rid,'source_id':'s','location':'L1','quote':'完整原文：'+rid} for rid in ['Topic','M02']]
         tags=[{'id':row['id'],'topics':['topic'],'keywords':['共享'],'related_ids':[rows[1-i]['id']]} for i,row in enumerate(rows)]
         out=self.d/'wiki';self.assertEqual(build(rows,tags,out),{'entries':2,'topics':1})
-        index=json.loads((out/'index.json').read_text())
-        self.assertEqual(json.loads((out/'keywords.json').read_text()),{'共享':['Topic','M02']})
+        index=json.loads((out/'index.json').read_text(encoding='utf-8'))
+        self.assertEqual(json.loads((out/'keywords.json').read_text(encoding='utf-8')),{'共享':['Topic','M02']})
         topic=out/'topics'/filename('topic')
         for row in rows:
             entry=out/index[row['id']]
             self.assertEqual(entry.name,filename(row['id']))
-            self.assertEqual(entry.read_text().split('<!-- full-quote -->\n',1)[1],row['quote'])
-            self.assertIn('['+row['id']+']',topic.read_text())
+            self.assertEqual(entry.read_text(encoding='utf-8').split('<!-- full-quote -->\n',1)[1],row['quote'])
+            self.assertIn('['+row['id']+']',topic.read_text(encoding='utf-8'))
         for page in [topic]+list((out/'entries').glob('*.md')):
-            links=re.findall(r'\]\(([^)]+)\)',page.read_text());self.assertTrue(links)
+            links=re.findall(r'\]\(([^)]+)\)',page.read_text(encoding='utf-8'));self.assertTrue(links)
             for link in links:self.assertTrue((page.parent/unquote(link)).is_file())
     def test_cuts_replay(self):
         spec={'range':[1,4],'cuts':[{'start':2,'end':2},{'line':3,'drop':'中间'}],'budget':10}
@@ -177,7 +177,7 @@ class Tools(unittest.TestCase):
         text='普通——正文\n> 引文——保留\n```text\n代码——保留\n```\n<!-- style:off -->\n例外——保留\n<!-- style:on -->\n'
         source=self.put('draft.md',text);before=source.read_bytes();r=self.cli('scan_style.py',source,'--output',self.d/'report.json')
         self.assertEqual(r.returncode,0,r.stderr);self.assertEqual(before,source.read_bytes())
-        report=json.loads((self.d/'report.json').read_text());self.assertEqual(len(report['hits']),1);self.assertEqual(report['hits'][0]['line'],1)
+        report=json.loads((self.d/'report.json').read_text(encoding='utf-8'));self.assertEqual(len(report['hits']),1);self.assertEqual(report['hits'][0]['line'],1)
         r=self.cli('scan_style.py',source,'--output',source);self.assertNotEqual(r.returncode,0);self.assertEqual(before,source.read_bytes())
     def test_scan_bad_rules_and_unclosed_regions(self):
         rule=self.put('rules.md','```json\n[]\n```')
@@ -191,7 +191,7 @@ class Tools(unittest.TestCase):
             r=self.cli(tool,*args);self.assertNotEqual(r.returncode,0)
     def test_all_examples_from_other_cwd(self):
         for name in ['source-based','true-stories','abridgement','polishing']:
-            r=subprocess.run([sys.executable,str(ROOT/'examples/replay.py'),name,'--output',str(self.d/name)],cwd=self.d,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True)
+            r=subprocess.run([sys.executable,str(ROOT/'examples/replay.py'),name,'--output',str(self.d/name)],cwd=self.d,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','PYTHONIOENCODING':'utf-8'},capture_output=True,encoding='utf-8')
             self.assertEqual(r.returncode,0,name+r.stderr)
 
 if __name__=='__main__':unittest.main()

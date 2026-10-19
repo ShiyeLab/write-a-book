@@ -68,7 +68,7 @@ def request(provider,query,key,timeout,retries):
         except Exception:raise ValueError('request_result_unknown') from None
 
 def config(path,routes):
-    rows=json.loads(path.read_text())['providers'];mapping={}
+    rows=json.loads(path.read_text(encoding='utf-8'))['providers'];mapping={}
     for row in rows:
         if not re.fullmatch('[a-z0-9_-]+',row.get('id','')) or row['id'] in mapping:raise ValueError('invalid_route_id')
         if row.get('adapter') not in ADAPTERS:raise ValueError('invalid_adapter')
@@ -81,7 +81,7 @@ def config(path,routes):
     return [mapping[n] for n in routes]
 
 def native(path,query):
-    data=json.loads(path.read_text());sources=[]
+    data=json.loads(path.read_text(encoding='utf-8'));sources=[]
     for row in data.get('sources',[]):
         url=safe_url(row.get('url',''))
         if url:sources.append({'url':url,'title':str(row.get('title','')),'origin':safe_url(row.get('origin',''))})
@@ -97,7 +97,7 @@ def execute(providers,query,out,live=False,responses=None,native_path=None,resum
     # 配置只允许变量名，绑定文件不记录凭证值。
     if out.exists():
         if not resume:raise ValueError('output_exists')
-        try:old_binding=json.loads((out/'binding.json').read_text())
+        try:old_binding=json.loads((out/'binding.json').read_text(encoding='utf-8'))
         except (OSError,ValueError):raise ValueError('unsupported_output_layout_use_new_directory') from None
         if not isinstance(old_binding,dict) or old_binding.get('layout_version')!=2 or not (out/'routes').is_dir():raise ValueError('unsupported_output_layout_use_new_directory')
         if old_binding!=binding:raise ValueError('resume_input_or_config_changed')
@@ -108,7 +108,7 @@ def execute(providers,query,out,live=False,responses=None,native_path=None,resum
     def one(p):
         file=out/'routes'/(p['id']+'.json')
         if resume and file.exists():
-            old=json.loads(file.read_text());signature=old.pop('_record_sha256',None)
+            old=json.loads(file.read_text(encoding='utf-8'));signature=old.pop('_record_sha256',None)
             if old.get('status')=='request_result_unknown' and not retry_unknown:return old
             if signature==fingerprint(old) and old.get('status')=='success' and old.get('sources') and old.get('answer'):return old
         try:
@@ -153,7 +153,7 @@ def main():
             rows=[{'route':x['id'],'variable':x['key_env'],'presence':'PRESENT' if os.environ.get(x['key_env']) else 'ABSENT','model_configured':bool(x.get('model'))} for x in providers]
             print(json.dumps({'status':'preflight_only','routes':rows},ensure_ascii=False));return 0
         if not a.query or not a.output or (not providers and not a.native_record):p.error('指定问题、输出及路线或原生记录')
-        report=execute(providers,a.query,a.output,a.execute,json.loads(a.responses.read_text()) if a.responses else None,a.native_record,a.resume,a.timeout,a.retries,a.retry_unknown,a.concurrency)
+        report=execute(providers,a.query,a.output,a.execute,json.loads(a.responses.read_text(encoding='utf-8')) if a.responses else None,a.native_record,a.resume,a.timeout,a.retries,a.retry_unknown,a.concurrency)
         print(report['status']);return {'success':0,'partial':3,'no_usable_results':1}[report['status']]
     except Exception as e:
         if isinstance(e,ValueError) and str(e)=='unsupported_output_layout_use_new_directory':

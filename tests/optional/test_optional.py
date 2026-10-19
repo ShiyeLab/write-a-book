@@ -26,7 +26,7 @@ class Optional(unittest.TestCase):
     def setUp(self):self.temp=tempfile.TemporaryDirectory();self.d=Path(self.temp.name)
     def tearDown(self):self.temp.cleanup()
     def cli(self,tool,*args):
-        return subprocess.run([sys.executable,str(ROOT/tool),*map(str,args)],capture_output=True,text=True,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'})
+        return subprocess.run([sys.executable,str(ROOT/tool),*map(str,args)],capture_output=True,encoding='utf-8',env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','PYTHONIOENCODING':'utf-8'})
     def test_docx_order(self):
         rows,missing,_=extract.extract(RAW/'registration.docx')
         self.assertFalse(missing);self.assertEqual([r['kind'] for r in rows],['paragraph','table','paragraph'])
@@ -68,15 +68,15 @@ class Optional(unittest.TestCase):
         report=ocr.run(RAW/'mixed.pdf',out,'gemini',None,100,'teaching',['zh-Hans'],responses=data)
         self.assertEqual(report['status'],'partial');first=(out/'p0001.txt').stat().st_mtime_ns
         data['1']=gemini('不应替换');data['2']=gemini('第二页');report=ocr.run(RAW/'mixed.pdf',out,'gemini',None,100,'teaching',['zh-Hans'],True,data)
-        self.assertEqual((out/'p0001.txt').read_text(),'第一页');self.assertEqual((out/'p0001.txt').stat().st_mtime_ns,first);self.assertEqual(report['records'][1]['status'],'success')
+        self.assertEqual((out/'p0001.txt').read_text(encoding='utf-8'),'第一页');self.assertEqual((out/'p0001.txt').stat().st_mtime_ns,first);self.assertEqual(report['records'][1]['status'],'success')
         with self.assertRaisesRegex(ValueError,'changed'):ocr.run(RAW/'mixed.pdf',out,'gemini',[2],100,'teaching',['zh-Hans'],True,data)
         source=self.d/'changed.pdf';shutil.copy2(RAW/'mixed.pdf',source)
         with source.open('ab') as f:f.write(b'\n% changed version\n')
         with self.assertRaisesRegex(ValueError,'changed'):ocr.run(source,out,'gemini',None,100,'teaching',['zh-Hans'],True,data)
     def test_ocr_corrupt_cached_text_not_reused(self):
         out=self.d/'ocr';data={'1':gemini('原结果')};ocr.run(RAW/'mixed.pdf',out,'gemini',[1],100,'teaching',['zh-Hans'],responses=data)
-        (out/'p0001.txt').write_text('被改过');data={'1':gemini('有效新结果')};ocr.run(RAW/'mixed.pdf',out,'gemini',[1],100,'teaching',['zh-Hans'],True,data)
-        self.assertEqual((out/'p0001.txt').read_text(),'有效新结果')
+        (out/'p0001.txt').write_text('被改过',encoding='utf-8');data={'1':gemini('有效新结果')};ocr.run(RAW/'mixed.pdf',out,'gemini',[1],100,'teaching',['zh-Hans'],True,data)
+        self.assertEqual((out/'p0001.txt').read_text(encoding='utf-8'),'有效新结果')
     def test_ocr_no_implicit_network_or_overwrite(self):
         with patch('ocr.urlopen',side_effect=AssertionError('network')):
             with self.assertRaisesRegex(ValueError,'execute'):ocr.run(RAW/'mixed.pdf',self.d/'none','gemini',None,100,'teaching',['zh-Hans'])
@@ -84,12 +84,12 @@ class Optional(unittest.TestCase):
         out=self.d/'out';out.mkdir()
         with self.assertRaisesRegex(ValueError,'exists'):ocr.run(RAW/'mixed.pdf',out,'gemini',[1],100,'teaching',['zh-Hans'],responses={'1':gemini()})
     def test_compare_units_not_accuracy(self):
-        f=self.d/'x.txt';f.write_text('一—'+'字'*98);r=compare([f],['一—'],['字'])[0]
+        f=self.d/'x.txt';f.write_text('一—'+'字'*98,encoding='utf-8');r=compare([f],['一—'],['字'])[0]
         self.assertEqual(r['patterns'][0]['per_10000_characters'],100);self.assertNotIn('accuracy',r);self.assertEqual(r['keyword_counts']['字'],98)
     def providers(self):
         return search.config(ROOT/'tools/research/providers.example.json',['doubao','qwen','qianfan','gemini'])
     def test_normalize_all_adapters(self):
-        data=json.loads((ROOT/'examples/getting-started/search-responses.json').read_text());ps=self.providers()
+        data=json.loads((ROOT/'examples/getting-started/search-responses.json').read_text(encoding='utf-8'));ps=self.providers()
         data['qianfan']={'choices':[{'finish_reason':'stop','message':{'content':'线索'}}],'references':[{'url':'https://example.org/baidu','title':'模拟'}]}
         for p in ps:
             r=search.normalize(p,'Q',data[p['id']]);self.assertEqual(r['status'],'success',r);self.assertFalse(r['evidence_eligible'])
@@ -104,7 +104,7 @@ class Optional(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'explicit'):search.execute(ps,'Q',self.d/'implicit')
         r=search.execute(ps,'Q',self.d/'partial',responses={'doubao':response()});self.assertEqual(r['status'],'partial')
     def test_same_source_native_import_and_no_overwrite(self):
-        ps=self.providers()[:2];native=self.d/'native.json';native.write_text(json.dumps({'query':'Q','answer':'模拟','web_search_confirmed':True,'sources':[{'url':'https://example.org/reprint','origin':'https://example.org/original'}],'simulated':True}))
+        ps=self.providers()[:2];native=self.d/'native.json';native.write_text(json.dumps({'query':'Q','answer':'模拟','web_search_confirmed':True,'sources':[{'url':'https://example.org/reprint','origin':'https://example.org/original'}],'simulated':True}),encoding='utf-8')
         data={'doubao':response(),'qwen':response()};out=self.d/'out';r=search.execute(ps,'Q',out,responses=data,native_path=native)
         self.assertEqual(r['status'],'success');self.assertEqual(len(r['same_url_or_declared_origin_groups']['https://example.org/original']),3)
         with self.assertRaisesRegex(ValueError,'exists'):search.execute(ps,'Q',out,responses=data)
@@ -113,13 +113,13 @@ class Optional(unittest.TestCase):
         ps=self.providers()[:1];out=self.d/'out';search.execute(ps,'Q',out,responses={'doubao':response()})
         r=search.execute(ps,'Q',out,responses={},resume=True);self.assertEqual(r['status'],'success')
         with self.assertRaisesRegex(ValueError,'changed'):search.execute(ps,'OTHER',out,responses={},resume=True)
-        file=out/'routes/doubao.json';data=json.loads(file.read_text());data['answer']='';file.write_text(json.dumps(data))
+        file=out/'routes/doubao.json';data=json.loads(file.read_text(encoding='utf-8'));data['answer']='';file.write_text(json.dumps(data),encoding='utf-8')
         r=search.execute(ps,'Q',out,responses={},resume=True);self.assertEqual(r['status'],'no_usable_results')
     def test_redaction_and_proxy_preserved(self):
         sentinel='FAKE_TEST_TOKEN_NOT_A_KEY';p={**self.providers()[0],'model':'teaching'};before=dict(os.environ)
         with patch.dict(os.environ,{p['key_env']:sentinel}),patch('search.request',return_value=response(sentinel,'https://example.org/a?token='+sentinel)):
             search.execute([p],'Q',self.d/'redact',live=True)
-        self.assertNotIn(sentinel,''.join(x.read_text() for x in (self.d/'redact').rglob('*.json')));self.assertTrue(dict(os.environ)==before)
+        self.assertNotIn(sentinel,''.join(x.read_text(encoding='utf-8') for x in (self.d/'redact').rglob('*.json')));self.assertTrue(dict(os.environ)==before)
     def test_ocr_unknown_resume_requires_explicit_retry(self):
         out=self.d/'unknown'
         with patch.dict(os.environ,{'TEACHING_KEY':'FAKE_TEST_KEY'}),patch('ocr.cloud',side_effect=ValueError('request_result_unknown')) as call:
@@ -148,7 +148,7 @@ class Optional(unittest.TestCase):
     def test_arbitrary_ten_routes_and_concurrency(self):
         import threading
         base=self.providers()[0];rows=[{**base,'id':'route'+str(i)} for i in range(10)]
-        c=self.d/'routes.json';c.write_text(json.dumps({'providers':rows}))
+        c=self.d/'routes.json';c.write_text(json.dumps({'providers':rows}),encoding='utf-8')
         ps=search.config(c,[p['id'] for p in rows]);barrier=threading.Barrier(3)
         def normalized(p,q,data):
             if int(p['id'][5:])<3:barrier.wait(timeout=5)
@@ -165,7 +165,7 @@ class Optional(unittest.TestCase):
         self.assertNotEqual(search.normalize(p,'Q',{'results':[]})['status'],'success')
         files=[]
         for name in ['kimi','another-search']:
-            f=self.d/(name+'.json');f.write_text(json.dumps({'provider':name,'query':'Q','answer':'模拟','web_search_confirmed':True,'simulated':True,'sources':[{'url':'https://example.org/'+name}]}));files.append(f)
+            f=self.d/(name+'.json');f.write_text(json.dumps({'provider':name,'query':'Q','answer':'模拟','web_search_confirmed':True,'simulated':True,'sources':[{'url':'https://example.org/'+name}]}),encoding='utf-8');files.append(f)
         r=search.execute([],'Q',self.d/'imports',native_path=files)
         self.assertEqual(r['status'],'success');self.assertEqual([x['provider'] for x in r['records']],['kimi','another-search'])
     def test_help_preflight_do_not_request(self):
