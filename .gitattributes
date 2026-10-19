@@ -1,0 +1,9 @@
+# 示例和来源记录按文件字节计算 sha256，各平台统一以 LF 检出。
+* text=auto eol=lf
+
+*.pdf binary
+*.docx binary
+*.pptx binary
+*.xlsx binary
+*.xls binary
+*.png binary
