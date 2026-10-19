@@ -1,0 +1,42 @@
+# 三平台运行全部离线测试；不设编码相关环境变量，按各系统默认环境暴露平台差异。
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.12']
+        include:
+          - os: ubuntu-latest
+            python: '3.9'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r tools/extraction/requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - run: python -m unittest discover -s tests/optional -v
+
+  node:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - run: npm --prefix tools/web-capture ci
+      - run: npm --prefix tools/web-capture exec -- playwright install --with-deps chromium
+      - run: node --test tests/optional/vision-resume.test.mjs
+      - run: node tests/optional/web-capture.test.mjs
