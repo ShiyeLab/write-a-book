@@ -1,0 +1,92 @@
+[
+  {
+    "id": "Ta2",
+    "source_id": "a",
+    "source_kind": "teaching-interview",
+    "location": "L00002",
+    "attribution": "青禾",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访"
+  },
+  {
+    "id": "Ta3",
+    "source_id": "a",
+    "source_kind": "teaching-interview",
+    "location": "L00003",
+    "attribution": "青禾",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访"
+  },
+  {
+    "id": "Ta4",
+    "source_id": "a",
+    "source_kind": "teaching-interview",
+    "location": "L00004",
+    "attribution": "青禾",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访"
+  },
+  {
+    "id": "Tb2",
+    "source_id": "b",
+    "source_kind": "teaching-interview",
+    "location": "L00002",
+    "attribution": "闻溪",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访"
+  },
+  {
+    "id": "Tb3",
+    "source_id": "b",
+    "source_kind": "teaching-interview",
+    "location": "L00003",
+    "attribution": "闻溪",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访"
+  },
+  {
+    "id": "Tb4",
+    "source_id": "b",
+    "source_kind": "teaching-interview",
+    "location": "L00004",
+    "attribution": "待确认",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访"
+  }
+]

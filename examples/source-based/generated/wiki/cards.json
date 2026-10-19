@@ -1,0 +1,230 @@
+[
+  {
+    "id": "M01",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00001",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ],
+    "quote": "桌面上放着两只颜色相同的箱子，一只收已登记的工具，一只收尚未登记的工具。",
+    "source_sha256": "b33d81384a6f54b5092a65d7f6f17321e46d66e0d55991b84e1cd24045d56fff",
+    "source_path": "lined/desk.txt"
+  },
+  {
+    "id": "M02",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00002",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ],
+    "quote": "第一次试用时，三位参加者都先问应该放进哪只箱子。",
+    "source_sha256": "b33d81384a6f54b5092a65d7f6f17321e46d66e0d55991b84e1cd24045d56fff",
+    "source_path": "lined/desk.txt"
+  },
+  {
+    "id": "M03",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00003",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ],
+    "quote": "记录员给两只箱子贴上“已登记”和“待登记”，没有更换箱子。",
+    "source_sha256": "b33d81384a6f54b5092a65d7f6f17321e46d66e0d55991b84e1cd24045d56fff",
+    "source_path": "lined/desk.txt"
+  },
+  {
+    "id": "M04",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00004",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ],
+    "quote": "第二次试用仍有人问归还后是否需要登记，这个问题没有得到现场记录。",
+    "source_sha256": "b33d81384a6f54b5092a65d7f6f17321e46d66e0d55991b84e1cd24045d56fff",
+    "source_path": "lined/desk.txt"
+  },
+  {
+    "id": "M05",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00001",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ],
+    "quote": "借用单原来只有物品名称和借用人两栏。",
+    "source_sha256": "d31edfc365612a689bffd0e2f75dfc2cde0978afa3c3a4964a4b6b44b4afb542",
+    "source_path": "lined/form.txt"
+  },
+  {
+    "id": "M06",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00002",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ],
+    "quote": "新草案增加归还日期和经手人两栏，每栏都附一个空白填写区。",
+    "source_sha256": "d31edfc365612a689bffd0e2f75dfc2cde0978afa3c3a4964a4b6b44b4afb542",
+    "source_path": "lined/form.txt"
+  },
+  {
+    "id": "M07",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00003",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ],
+    "quote": "草案还没有用于正式活动，不能据此计算遗失率的变化。",
+    "source_sha256": "d31edfc365612a689bffd0e2f75dfc2cde0978afa3c3a4964a4b6b44b4afb542",
+    "source_path": "lined/form.txt"
+  },
+  {
+    "id": "M08",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00004",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ],
+    "quote": "遇到暂时不知道的归还日期，填写“待约定”，不要擅自写当天。",
+    "source_sha256": "d31edfc365612a689bffd0e2f75dfc2cde0978afa3c3a4964a4b6b44b4afb542",
+    "source_path": "lined/form.txt"
+  },
+  {
+    "id": "M09",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00001",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ],
+    "quote": "讨论者建议先让一名没有参与设计的人读说明，再看他会在哪一步停住。",
+    "source_sha256": "31ccbeb3ee2a49ea0dc8dddb008bee27d8f6b3f3655faceeb845259e9afb02fd",
+    "source_path": "lined/review.txt"
+  },
+  {
+    "id": "M10",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00002",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ],
+    "quote": "有人提出用颜色区分两只箱子，另一人提醒颜色说明仍需配文字。",
+    "source_sha256": "31ccbeb3ee2a49ea0dc8dddb008bee27d8f6b3f3655faceeb845259e9afb02fd",
+    "source_path": "lined/review.txt"
+  },
+  {
+    "id": "M11",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00003",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ],
+    "quote": "讨论没有比较哪种颜色更有效，也没有收集使用时长。",
+    "source_sha256": "31ccbeb3ee2a49ea0dc8dddb008bee27d8f6b3f3655faceeb845259e9afb02fd",
+    "source_path": "lined/review.txt"
+  },
+  {
+    "id": "M12",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00004",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ],
+    "quote": "下次试用要分别记录提问位置和工作人员补充的解释。",
+    "source_sha256": "31ccbeb3ee2a49ea0dc8dddb008bee27d8f6b3f3655faceeb845259e9afb02fd",
+    "source_path": "lined/review.txt"
+  }
+]

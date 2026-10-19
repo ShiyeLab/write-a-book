@@ -1,0 +1,39 @@
+{
+  "providers": [
+    {
+      "id": "deepseek",
+      "adapter": "deepseek_search",
+      "key_env": "BOOK_RESEARCH_DEEPSEEK_KEY",
+      "endpoint": "https://api.deepseek.com/v1/tools/search",
+      "top_k": 10
+    },
+    {
+      "id": "doubao",
+      "adapter": "responses_annotations",
+      "key_env": "BOOK_RESEARCH_DOUBAO_KEY",
+      "model": "",
+      "endpoint": "https://ark.cn-beijing.volces.com/api/v3/responses"
+    },
+    {
+      "id": "qwen",
+      "adapter": "responses_action_sources",
+      "key_env": "BOOK_RESEARCH_QWEN_KEY",
+      "model": "",
+      "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/responses"
+    },
+    {
+      "id": "qianfan",
+      "adapter": "qianfan_ai_search",
+      "key_env": "BOOK_RESEARCH_QIANFAN_KEY",
+      "model": "",
+      "endpoint": "https://qianfan.baidubce.com/v2/ai_search/chat/completions"
+    },
+    {
+      "id": "gemini",
+      "adapter": "gemini_grounding",
+      "key_env": "BOOK_RESEARCH_GEMINI_KEY",
+      "model": "",
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    }
+  ]
+}

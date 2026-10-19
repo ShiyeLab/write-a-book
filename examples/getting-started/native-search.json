@@ -1,0 +1,13 @@
+{
+  "simulated": true,
+  "query": "教学：如何安排登记",
+  "web_search_confirmed": true,
+  "answer": "模拟原生搜索导入，不是本轮真实搜索。",
+  "sources": [
+    {
+      "url": "https://example.org/reprint",
+      "origin": "https://example.org/original",
+      "title": "模拟转载"
+    }
+  ]
+}

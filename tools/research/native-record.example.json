@@ -1,0 +1,13 @@
+{
+  "simulated": true,
+  "query": "教学问题",
+  "answer": "模拟线索，不是真实检索。",
+  "web_search_confirmed": false,
+  "sources": [
+    {
+      "title": "教学来源",
+      "url": "https://example.org/source",
+      "origin": "https://example.org/source"
+    }
+  ]
+}

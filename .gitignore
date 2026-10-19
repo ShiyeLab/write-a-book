@@ -1,0 +1,10 @@
+books/*
+!books/README.md
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+node_modules/
+.env
+.env.*
+providers.local.json

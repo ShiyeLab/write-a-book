@@ -1,0 +1,194 @@
+[
+  {
+    "id": "M01",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00001",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ]
+  },
+  {
+    "id": "M02",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00002",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ]
+  },
+  {
+    "id": "M03",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00003",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ]
+  },
+  {
+    "id": "M04",
+    "source_id": "desk",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00004",
+    "summary": "标签减少第一步歧义",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "入口说明"
+    ]
+  },
+  {
+    "id": "M05",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00001",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ]
+  },
+  {
+    "id": "M06",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00002",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ]
+  },
+  {
+    "id": "M07",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00003",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ]
+  },
+  {
+    "id": "M08",
+    "source_id": "form",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00004",
+    "summary": "用空值标记未知",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "记录字段"
+    ]
+  },
+  {
+    "id": "M09",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00001",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ]
+  },
+  {
+    "id": "M10",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00002",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ]
+  },
+  {
+    "id": "M11",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00003",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ]
+  },
+  {
+    "id": "M12",
+    "source_id": "review",
+    "source_kind": "teaching",
+    "readiness": "可用于教学",
+    "location": "L00004",
+    "summary": "用提问定位说明缺口",
+    "attribution": "教学记录员",
+    "attribution_basis": "本示例的虚构来源设定",
+    "time": "待确认",
+    "time_basis": "未提供日期",
+    "restrictions": "仅作教学，不能当现实研究证据",
+    "tags": [
+      "试用检查"
+    ]
+  }
+]

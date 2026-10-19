@@ -1,0 +1,20 @@
+[
+  {
+    "id": "desk",
+    "path": "lined/desk.txt",
+    "position_type": "sentence-lines",
+    "sha256": "b33d81384a6f54b5092a65d7f6f17321e46d66e0d55991b84e1cd24045d56fff"
+  },
+  {
+    "id": "form",
+    "path": "lined/form.txt",
+    "position_type": "sentence-lines",
+    "sha256": "d31edfc365612a689bffd0e2f75dfc2cde0978afa3c3a4964a4b6b44b4afb542"
+  },
+  {
+    "id": "review",
+    "path": "lined/review.txt",
+    "position_type": "sentence-lines",
+    "sha256": "31ccbeb3ee2a49ea0dc8dddb008bee27d8f6b3f3655faceeb845259e9afb02fd"
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "source_id": "review",
+  "original": "../../raw/review.txt",
+  "original_sha256": "65a5d5be00d992f0b00bc924809c4bc48d96e4e609861281385e98eeb005daa8",
+  "position_type": "sentence-lines",
+  "algorithm": "sentence-v2",
+  "segments": 4,
+  "sha256": "31ccbeb3ee2a49ea0dc8dddb008bee27d8f6b3f3655faceeb845259e9afb02fd"
+}

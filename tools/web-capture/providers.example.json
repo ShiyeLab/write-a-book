@@ -1,0 +1,1 @@
+{"providers":[{"id":"gemini","adapter":"gemini","model":"","key_env":"BOOK_VISION_GEMINI_KEY","endpoint":"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"},{"id":"doubao","adapter":"chat-completions","model":"","key_env":"BOOK_VISION_DOUBAO_KEY","endpoint":"https://ark.cn-beijing.volces.com/api/v3/chat/completions"}]}

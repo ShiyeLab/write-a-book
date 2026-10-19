@@ -1,0 +1,7 @@
+# 本次 Python 3.9 / macOS 验证组合；不向其他系统安装 Apple 路线。
+PyMuPDF==1.26.5
+ocrmac==1.0.0; sys_platform == 'darwin'
+pyobjc-core==11.1; sys_platform == 'darwin'
+pyobjc-framework-Cocoa==11.1; sys_platform == 'darwin'
+pyobjc-framework-Quartz==11.1; sys_platform == 'darwin'
+pyobjc-framework-Vision==11.1; sys_platform == 'darwin'

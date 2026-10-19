@@ -1,0 +1,9 @@
+{
+  "source_id": "desk",
+  "original": "../../raw/desk.txt",
+  "original_sha256": "5f662c264e584e7bbf85f3327dfec8c3645dd2a9c6062f70760a7f6e0680bf1a",
+  "position_type": "sentence-lines",
+  "algorithm": "sentence-v2",
+  "segments": 4,
+  "sha256": "b33d81384a6f54b5092a65d7f6f17321e46d66e0d55991b84e1cd24045d56fff"
+}

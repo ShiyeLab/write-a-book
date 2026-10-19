@@ -1,0 +1,9 @@
+{
+  "source_id": "b",
+  "original": "../../raw/b.txt",
+  "original_sha256": "15f39a445d952c39424b2a87990ee46195e1d28eb538dbbd08c83920831850b1",
+  "position_type": "sentence-lines",
+  "algorithm": "sentence-v2",
+  "segments": 4,
+  "sha256": "ab6d2aaa1d6104631f17e5b4522d0034cda48ef575d87163a032f2bccee35fc6"
+}

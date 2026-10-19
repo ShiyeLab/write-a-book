@@ -1,0 +1,110 @@
+[
+  {
+    "id": "Ta2",
+    "source_id": "a",
+    "source_kind": "teaching-interview",
+    "location": "L00002",
+    "attribution": "青禾",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访",
+    "quote": "青禾：我把破袋放在长桌上，先找了一块同色布。",
+    "source_sha256": "ebf91164225030322a769730c8729e49b85ecc49c0559602bd3d4bb5aa77a2c0",
+    "source_path": "lined/a.txt"
+  },
+  {
+    "id": "Ta3",
+    "source_id": "a",
+    "source_kind": "teaching-interview",
+    "location": "L00003",
+    "attribution": "青禾",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访",
+    "quote": "青禾：针线盒是闻溪带来的，我没有准备线。",
+    "source_sha256": "ebf91164225030322a769730c8729e49b85ecc49c0559602bd3d4bb5aa77a2c0",
+    "source_path": "lined/a.txt"
+  },
+  {
+    "id": "Ta4",
+    "source_id": "a",
+    "source_kind": "teaching-interview",
+    "location": "L00004",
+    "attribution": "青禾",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访",
+    "quote": "青禾：后来为什么换位置，我记不清了。",
+    "source_sha256": "ebf91164225030322a769730c8729e49b85ecc49c0559602bd3d4bb5aa77a2c0",
+    "source_path": "lined/a.txt"
+  },
+  {
+    "id": "Tb2",
+    "source_id": "b",
+    "source_kind": "teaching-interview",
+    "location": "L00002",
+    "attribution": "闻溪",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访",
+    "quote": "闻溪：我带了针线盒，看见青禾已经找到了布。",
+    "source_sha256": "ab6d2aaa1d6104631f17e5b4522d0034cda48ef575d87163a032f2bccee35fc6",
+    "source_path": "lined/b.txt"
+  },
+  {
+    "id": "Tb3",
+    "source_id": "b",
+    "source_kind": "teaching-interview",
+    "location": "L00003",
+    "attribution": "闻溪",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访",
+    "quote": "闻溪：我记得桌边比较暗，后来我们换了位置。",
+    "source_sha256": "ab6d2aaa1d6104631f17e5b4522d0034cda48ef575d87163a032f2bccee35fc6",
+    "source_path": "lined/b.txt"
+  },
+  {
+    "id": "Tb4",
+    "source_id": "b",
+    "source_kind": "teaching-interview",
+    "location": "L00004",
+    "attribution": "待确认",
+    "attribution_basis": "教学底本说话人标签；没有真实录音",
+    "time": "周末，日期待确认",
+    "time_basis": "采访问题，未独立核实",
+    "summary": "修复活动片段",
+    "tags": [
+      "修复"
+    ],
+    "restrictions": "虚构教学，不可作为真实采访",
+    "quote": "未辨认说话人：那块布最后没有用上。",
+    "source_sha256": "ab6d2aaa1d6104631f17e5b4522d0034cda48ef575d87163a032f2bccee35fc6",
+    "source_path": "lined/b.txt"
+  }
+]

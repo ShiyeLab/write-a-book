@@ -1,0 +1,36 @@
+{
+  "total": 6,
+  "passed": 6,
+  "results": [
+    {
+      "id": "Ta2",
+      "location_valid": true,
+      "full_text_equal": true
+    },
+    {
+      "id": "Ta3",
+      "location_valid": true,
+      "full_text_equal": true
+    },
+    {
+      "id": "Ta4",
+      "location_valid": true,
+      "full_text_equal": true
+    },
+    {
+      "id": "Tb2",
+      "location_valid": true,
+      "full_text_equal": true
+    },
+    {
+      "id": "Tb3",
+      "location_valid": true,
+      "full_text_equal": true
+    },
+    {
+      "id": "Tb4",
+      "location_valid": true,
+      "full_text_equal": true
+    }
+  ]
+}

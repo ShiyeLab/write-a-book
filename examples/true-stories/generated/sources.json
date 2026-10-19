@@ -1,0 +1,14 @@
+[
+  {
+    "id": "a",
+    "path": "lined/a.txt",
+    "position_type": "sentence-lines",
+    "sha256": "ebf91164225030322a769730c8729e49b85ecc49c0559602bd3d4bb5aa77a2c0"
+  },
+  {
+    "id": "b",
+    "path": "lined/b.txt",
+    "position_type": "sentence-lines",
+    "sha256": "ab6d2aaa1d6104631f17e5b4522d0034cda48ef575d87163a032f2bccee35fc6"
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "doubao": {
+    "output": [
+      {
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "模拟：一份记录建议20分钟；仍需核原件。",
+            "annotations": [
+              {
+                "url": "https://example.org/original",
+                "title": "模拟原始记录"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "qwen": {
+    "output": [
+      {
+        "type": "web_search_call",
+        "action": {
+          "sources": [
+            {
+              "url": "https://example.org/original",
+              "title": "相同模拟原始记录"
+            }
+          ]
+        }
+      },
+      {
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "模拟：同一原始记录，不是第二份独立证据。"
+          }
+        ]
+      }
+    ]
+  },
+  "qianfan": {
+    "error": {
+      "message": "模拟获取失败"
+    }
+  },
+  "gemini": {
+    "candidates": [
+      {
+        "finishReason": "STOP",
+        "content": {
+          "parts": [
+            {
+              "text": "模拟：另有10分钟说法，来源未核。"
+            }
+          ]
+        },
+        "groundingMetadata": {
+          "groundingChunks": [
+            {
+              "web": {
+                "uri": "https://example.org/conflict",
+                "title": "模拟冲突记录"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

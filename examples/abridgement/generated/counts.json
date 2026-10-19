@@ -1,0 +1,9 @@
+{
+  "original_hanzi": 1568,
+  "deleted_hanzi": 219,
+  "kept_hanzi": 1349,
+  "budget": 1500,
+  "over_budget": false,
+  "budget_delta": -151,
+  "counting": "U+4E00—U+9FFF；包含范围内标题和注记"
+}

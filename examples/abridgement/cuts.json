@@ -1,0 +1,21 @@
+{
+  "chapter": "路线图教学删节",
+  "source": "raw/original.md",
+  "range": [
+    1,
+    29
+  ],
+  "budget": 1500,
+  "cuts": [
+    {
+      "start": 7,
+      "end": 7,
+      "reason": "删除与入口判断无关的支线描写"
+    },
+    {
+      "start": 19,
+      "end": 19,
+      "reason": "删除与入口判断无关的支线描写"
+    }
+  ]
+}

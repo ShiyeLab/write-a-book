@@ -1,0 +1,21 @@
+{
+  "mode": "strict",
+  "window": 0,
+  "check": "范围内子串定位，不证明整个摘录覆盖完整区间",
+  "total": 3,
+  "passed": 3,
+  "results": [
+    {
+      "id": "S1",
+      "matched": true
+    },
+    {
+      "id": "S2",
+      "matched": true
+    },
+    {
+      "id": "S3",
+      "matched": true
+    }
+  ]
+}
