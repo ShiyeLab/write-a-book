@@ -1,8 +1,10 @@
 # 本地工具
 
-本页介绍八个核心文本工具，均仅依赖 Python 标准库，要求 Python 3.9 或更新版本；本次实际运行版本为 Python 3.9.6。其他版本未逐一验证。本页核心命令离线，不读取账号、不调用模型。下列命令从仓库根运行；脚本本身也可用绝对脚本路径在其他工作目录启动。
+本页介绍八个核心文本工具，均仅依赖 Python 标准库，要求 Python 3.9 或更新版本；CI 在 Ubuntu、Windows、macOS 上以 Python 3.12 运行全部测试，并在 Ubuntu 上以 3.9 验证最低版本。本页核心命令离线，不读取账号、不调用模型。下列命令从仓库根运行；脚本本身也可用绝对脚本路径在其他工作目录启动。
 
-通用约定：UTF-8；文本读取将 CRLF／CR 规范为 LF，除此之外不做隐式 Unicode 规范化。命令行路径相对当前工作目录；来源清单内的 path 相对清单所在目录；cuts 的 source 相对显式 `--base`；风格证据 file 相对 `--samples`。工具不自动解析 Markdown 来源卡，使用下述 JSON 契约。
+通用约定：UTF-8；文本读取将 CRLF／CR 规范为 LF，输出在各平台统一以 LF 写出，除此之外不做隐式 Unicode 规范化。命令行路径相对当前工作目录；来源清单内的 path 相对清单所在目录；cuts 的 source 相对显式 `--base`；风格证据 file 相对 `--samples`。工具不自动解析 Markdown 来源卡，使用下述 JSON 契约。
+
+命令按 POSIX shell 书写。Windows 上：`python3` 不可用时改用 `py -3` 或 `python`；虚拟环境激活为 `.venv\Scripts\activate`（PowerShell 为 `.venv\Scripts\Activate.ps1`），不是 `.venv/bin/activate`；`run=$(mktemp -d)` 与 `/tmp/...` 换成任意新的临时目录，PowerShell 可用 `$run = Join-Path $env:TEMP ([guid]::NewGuid())`。Git Bash 中可原样运行，但仍需确认 `python3` 指向实际解释器。原件与输出可以在不同盘符。
 
 所有输出使用新路径；已存在的文件或目录会报错，不覆盖输入或旧成果。Wiki 先验证输入，再在临时目录构建，完成后移到目标。正确退出为 0，数据、读写或验证失败为 1，命令参数错误为 2。检查报告写到标准输出，需保留时重定向至新文件。扫描命中只是建议，退出仍为 0；规则无效才失败。预算超限默认只报告，强制预算需显式参数。
 
