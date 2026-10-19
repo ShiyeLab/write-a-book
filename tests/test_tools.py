@@ -52,6 +52,9 @@ class Tools(unittest.TestCase):
     def test_inject_legacy_spacing_and_metadata(self):
         text,count=number_text('# OCR\n---\n\n# 标题\n\n未完\n\n续句。 下一句！')
         self.assertEqual(count,3);self.assertNotIn('OCR',text);self.assertIn('未完续句。',text)
+    def test_inject_apostrophe_is_not_quote(self):
+        text,count=number_text("It's late! Who's there? Nobody!")
+        self.assertEqual(count,3);self.assertIn("L00002: Who's there?",text)
     def test_inject_yaml_front_matter(self):
         text,count=number_text('---\ntitle: 访谈记录\ntags:\n  - 口述\n---\n他说：“我记得。”然后走了。')
         self.assertEqual(text,'L00001: 他说：“我记得。”\nL00002: 然后走了。\n')

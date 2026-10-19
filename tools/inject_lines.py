@@ -23,6 +23,10 @@ def is_heading_line(line: str) -> bool:
     """是否是 markdown 标题行（# / ## / ###...）。"""
     return bool(HEADING_RE.match(line.strip()))
 
+def is_apostrophe(text: str, i: int) -> bool:
+    """两侧都是字母或数字的直单引号是英文撇号（it's、90's），不是引号。"""
+    return 0 < i < len(text) - 1 and text[i - 1].isalnum() and text[i + 1].isalnum()
+
 def split_sentences(text: str) -> list:
     """把一个段落（已去掉换行符的纯文本）按句切分。
 
@@ -92,6 +96,8 @@ def split_sentences(text: str) -> list:
                 straight_double_pos = i
             else:
                 straight_double = 0
+        elif ch == "'" and is_apostrophe(text, i):
+            pass
         elif ch == "'":
             if straight_single == 0:
                 straight_single = 1
@@ -309,7 +315,7 @@ def main():
     content,count=number_text(read(a.source))
     if not count: raise ValueError('输入没有正文')
     metadata={'source_id':a.source_id,'original':os.path.relpath(Path(a.source).resolve(),out.resolve().parent),
-        'original_sha256':digest(a.source),'position_type':'sentence-lines','algorithm':'sentence-v3','segments':count}
+        'original_sha256':digest(a.source),'position_type':'sentence-lines','algorithm':'sentence-v4','segments':count}
     write_new(out,content); metadata['sha256']=digest(out);write_new(meta,encode(metadata))
     print(encode({'segments':count,'position_type':'sentence-lines'}),end='')
 if __name__=='__main__': raise SystemExit(run(main))
